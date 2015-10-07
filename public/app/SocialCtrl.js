@@ -14,10 +14,11 @@ angular
     function onMessage(messages) {
       this.messages = messages;
       $scope.$apply();
-    } 
+    }
 
     this.sendMessage = function() {
     	SocketIOService.messageUpdate(this.message);
+      this.message = "";
     }
 
    	SocketIOService.onMessage(onMessage.bind(this));

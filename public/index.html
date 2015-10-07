@@ -10,6 +10,7 @@
 
   <body>
     <div class="container" ng-controller="SocialCtrl as social">
+      <p> Connected viewers : </p>
       <div ng-repeat="viewer in social.viewers track by $index" class="animate">
         {{ viewer }}
       </div>
@@ -83,7 +84,8 @@
 
       <!-- Affiche le chat -->
       <div class="col-md-3">
-        <div class="wrap" style="overflow:auto;max-height:100px;">
+        <p> Chat : </p>
+        <div class="wrap" style="overflow:auto;max-height:500px;background-color:#c4c4c4">
               <div ng-repeat="message in social.messages track by $index" class="animate">
                   {{ message }}
               </div>
@@ -95,8 +97,8 @@
               placeholder="What are you doing?" />
             </form>
           </div>
-        </div>
-      </div><!-- row ? -->
+        </div> <!-- row -->
+      </div><!-- second container -->
     </div><!-- /container -->
 
   <script src="/components/angular/angular.js" type="text/javascript"></script>

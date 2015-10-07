@@ -1,4 +1,6 @@
-
+.chat{
+  height: 500px;
+}
 .row-fluid{
   clear: both;
 }
