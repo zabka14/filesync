@@ -87,8 +87,7 @@ sio.on('connection', function(socket) {
 
 
   socket.on('message:updating', function(message) {
-    messages.add(message);
-    console.log(message);
+    messages.add(socket.nickname+" : "+ message);
   });
 
 
