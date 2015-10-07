@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/components/highlightjs/styles/github.css"/>
     <link rel="stylesheet" href="css/style.css"/>
   </head>
-<!-- Test -->
+
   <body>
     <div class="container" ng-controller="SocialCtrl as social">
       <div ng-repeat="viewer in social.viewers track by $index" class="animate">
@@ -81,11 +81,11 @@
         </div>
       </div>
 
-
+      <!-- Affiche le chat -->
       <div class="col-md-3">
         <div class="wrap" style="overflow:auto;max-height:100px;">
-              <div ng-repeat="message in social.messages" class="animate">
-                {{ message }}
+              <div ng-repeat="message in social.messages track by $index" class="animate">
+                  {{ message }}
               </div>
             </div>
             <form ng-submit="social.sendMessage()">
@@ -94,7 +94,6 @@
               name="name"
               placeholder="What are you doing?" />
             </form>
-
           </div>
         </div>
       </div><!-- row ? -->
