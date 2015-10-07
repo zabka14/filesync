@@ -35,8 +35,19 @@ angular.module('FileSync')
         socket.on('viewers:updated', f);
       },
 
+
+      onMessage: function(f) {
+        socket.on('message:update', f);
+      },
+
+
       onFileChanged: function(f) {
         _onFileChanged = f;
+      },
+
+
+      messageUpdate: function(f) {
+        socket.emit('message:updating', f);
       },
 
       onVisibilityStatesChanged: function(f) {

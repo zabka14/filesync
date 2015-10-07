@@ -51,7 +51,23 @@ function Viewers(sio) {
   };
 }
 
+function Messages(sio) {
+  var msg = [];
+
+  function notifyChanges() {
+    sio.emit('message:update', msg);
+  }
+
+  return {
+    add: function add(message) {
+      msg.push(message);
+      notifyChanges();
+    },
+  };
+}
+
 var viewers = Viewers(sio);
+var messages = Messages(sio);
 
 
 // @todo extract in its own
@@ -68,6 +84,13 @@ sio.on('connection', function(socket) {
     viewers.remove(socket.nickname);
     console.log('viewer disconnected %s\nremaining:', socket.nickname, viewers);
   });
+
+
+  socket.on('message:updating', function(message) {
+    messages.add(message);
+    console.log(message);
+  });
+
 
   socket.on('file:changed', function() {
     if (!socket.conn.request.isAdmin) {
