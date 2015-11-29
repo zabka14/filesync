@@ -73,6 +73,12 @@ var messages = Messages(sio);
 // @todo extract in its own
 sio.on('connection', function(socket) {
 
+
+
+  socket.on('file:etuChange', function(){
+      // comment je chope le socket du prof ? 
+  });
+
   // console.log('nouvelle connexion', socket.id);
   socket.on('viewer:new', function(nickname) {
     socket.nickname = nickname;
