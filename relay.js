@@ -5,6 +5,7 @@ var fs = require('fs');
 var path = require('path');
 var logger = require('winston');
 var config = require('./config')(logger);
+var prompt = require('prompt');
 
 var directory = path.resolve(__dirname, process.argv[2]);
 
@@ -31,10 +32,27 @@ sio.on('connect', function() {
 
 
 sio.on('etu:send', function(filename, timestamp, content) {
-  console.log("Fichier recu d'un etudiant");
-  console.log("Nom du fichier : "+filename);
-  console.log("Date d'envoie : "+timestamp);
-  console.log("Content : "+content);
+
+
+
+  console.log("You received a file from a student :");
+  console.log("File's name : "+filename);
+  console.log("Send at : "+ timestamp);
+  console.log("The file will be stored on /tmp/filesync");
+  if (!fs.exists('/tmp/filesync/')) {
+    console.log("Direcotry is being created ...");
+    fs.mkdir('/tmp/filesync/', function(error) {
+      console.log("Warning : mkdir in relay.js");
+    })
+    console.log("Directory as been created.");
+  }
+  fs.writeFile('/tmp/filesync/'+filename, content, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+
+    console.log("The file was saved!");
+  });
 });
 
 
