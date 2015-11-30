@@ -6,6 +6,7 @@ var path = require('path');
 var logger = require('winston');
 var config = require('./config')(logger);
 var prompt = require('prompt');
+var open = require("open");
 
 var directory = path.resolve(__dirname, process.argv[2]);
 
@@ -32,30 +33,13 @@ sio.on('connect', function() {
 
 
 sio.on('etu:send', function(filename, timestamp, content) {
-
-
-
   console.log("You received a file from a student :");
   console.log("File's name : "+filename);
   console.log("Send at : "+ timestamp);
   console.log("The file will be stored on /tmp/filesync");
-  if (!fs.exists('/tmp/filesync/')) {
-    console.log("Direcotry is being created ...");
-    fs.mkdir('/tmp/filesync/', function(error) {
-      console.log("Warning : mkdir in relay.js");
-    })
-    console.log("Directory as been created.");
-  }
-  fs.writeFile('/tmp/filesync/'+filename, content, function(err) {
-    if(err) {
-        return console.log(err);
-    }
-
-    console.log("The file was saved!");
-  });
+  console.log("Would you like to save ? Y/N");
+  inputHandler(filename, content);
 });
-
-
 
 
 gaze(directory, function(err, watcher) {
@@ -98,3 +82,87 @@ gaze(directory, function(err, watcher) {
   });
 
 });
+
+
+prompt.start();
+var filename;
+var content;
+
+function inputHandler(filename, content){
+
+  prompt.get(['save'], function (err, result) {
+      if (result.save == 'y') {
+        storeFile(filename, content);
+      }
+      else {
+        console.log("File has been rejected");
+      }
+   });
+}
+
+function openHandler(filename){
+  console.log("Would you like to open this file ? Y/N");
+  prompt.get(['open'], function (err, result) {
+      if (result.open == 'y') {
+        openFile(filename);
+      }
+      else {
+        console.log("File is still available in /tmp/filesync.");
+      }
+   });
+}
+
+function sendHandler(filename){
+  console.log("Would you like to send this file to the server ? Y/N");
+  prompt.get(['send'], function (err, result) {
+      if (result.send == 'y') {
+        sendFile(filename);
+      }
+      else {
+        console.log("File is still available in /tmp/filesync.");
+      }
+   });
+}
+
+
+function storeFile(filename, content){
+  if (!fs.exists('/tmp/filesync/')) {
+    fs.mkdir('/tmp/filesync/', function(error) {
+      console.log("MKDIR working ...");
+    })
+  }
+  fs.writeFile('/tmp/filesync/'+filename, content, function(err) {
+    if(err) {
+        return console.log(err);
+    }
+
+    console.log("The file was saved!");
+    openHandler(filename);
+  });
+}
+
+function openFile(filename){
+  open('/tmp/filesync/'+filename);
+  sendHandler(filename);
+}
+
+function sendFile(filename){
+  gaze('/tmp/filesync/'+filename, function(err, watcher) {
+    if (err) {
+      throw err;
+    }
+
+    // Get all watched files
+    this.watched(function(err, watched) {
+      console.log(watched);
+    });
+
+    // On file changed
+      sio.emit('file:changed',
+        '/tmp/filesync/'+filename,
+        Date.now(),
+        fs.readFileSync('/tmp/filesync/'+filename, 'utf-8') // @todo use async mode
+      );
+
+  });
+}
