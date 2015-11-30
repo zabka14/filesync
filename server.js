@@ -68,15 +68,20 @@ function Messages(sio) {
 
 var viewers = Viewers(sio);
 var messages = Messages(sio);
+var teacher = new Object();
 
 
 // @todo extract in its own
 sio.on('connection', function(socket) {
 
+  socket.on('teacher:co', function(foo){
+    teacher.id = socket.id;
+    console.log(teacher.id);
+  });
 
 
   socket.on('file:etuChange', function(){
-      // comment je chope le socket du prof ? 
+      // comment je chope le socket du prof ?
   });
 
   // console.log('nouvelle connexion', socket.id);

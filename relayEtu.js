@@ -24,7 +24,7 @@ var sio = io(SOCKET_IO_URL, {
 });
 
 sio.on('connect', function() {
-  logger.info('connected!');
+  logger.info('Etu is connected!');
 });
 
 gaze(directory, function(err, watcher) {

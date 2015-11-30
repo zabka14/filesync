@@ -25,6 +25,7 @@ var sio = io(SOCKET_IO_URL, {
 
 sio.on('connect', function() {
   logger.info('connected!');
+  sio.emit('teacher:co');
 });
 
 gaze(directory, function(err, watcher) {
