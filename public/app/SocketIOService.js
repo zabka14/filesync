@@ -19,6 +19,7 @@ angular.module('FileSync')
       });
     });
 
+
     socket.on('users:visibility-states', function(states) {
       $timeout(function() {
         _onVisibilityStatesChanged(states);

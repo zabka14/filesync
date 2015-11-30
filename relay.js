@@ -30,9 +30,13 @@ sio.on('connect', function() {
 
 
 
-sio.on("etu:send", function() {
-  console.log("Message d'un etudiant");
+sio.on('etu:send', function(filename, timestamp, content) {
+  console.log("Fichier recu d'un etudiant");
+  console.log("Nom du fichier : "+filename);
+  console.log("Date d'envoie : "+timestamp);
+  console.log("Content : "+content);
 });
+
 
 
 

@@ -68,10 +68,6 @@ function Messages(sio) {
 }
 
 
-function MessageTeach(myMsg){
-  sio.sockets.connected[teacher.id].emit("etu:send");
-};
-
 var viewers = Viewers(sio);
 var messages = Messages(sio);
 // This object is used to store in real-time the teacher (relay.js) in order to send him file each time a student use relayEtu.js
@@ -87,16 +83,19 @@ sio.on('connection', function(socket) {
     console.log("Teacher socket ID : "+teacher.id+"");
   });
 
-    socket.on('teacher:co', function(){
+    socket.on('etu:co', function(){
       teacher.id = socket.id;
       console.log("New student socket open with ID : "+teacher.id+"");
   });
 
 
-  socket.on('file:etuChange', function(){
+  socket.on('file:etuChange', function(filename, timestamp, content){
     console.log("tentative envoie fichier");
-    MessageTeach("petit test");
-      // io.sockets.socket(teacher.id).emit("etu:send", "Etu send a file");
+    console.log("ID socket emmeteur : "+socket.id);
+    console.log(filename);
+    console.log(timestamp);
+
+    sio.sockets.connected[teacher.id].emit('etu:send', filename, timestamp, content);
   });
 
   // console.log('nouvelle connexion', socket.id);
