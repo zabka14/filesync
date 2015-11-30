@@ -6,6 +6,8 @@ var path = require('path');
 var app = express();
 var _ = require('lodash');
 
+
+
 var logger = require('winston');
 var config = require('./config')(logger);
 
@@ -18,7 +20,6 @@ app.get('/', function(req, res) {
 var server = app.listen(config.server.port, function() {
   logger.info('Server listening on %s', config.server.port);
 });
-
 
 var sio = io(server);
 
@@ -66,22 +67,36 @@ function Messages(sio) {
   };
 }
 
+
+function MessageTeach(myMsg){
+  sio.sockets.connected[teacher.id].emit("etu:send");
+};
+
 var viewers = Viewers(sio);
 var messages = Messages(sio);
+// This object is used to store in real-time the teacher (relay.js) in order to send him file each time a student use relayEtu.js
 var teacher = new Object();
 
 
 // @todo extract in its own
 sio.on('connection', function(socket) {
 
-  socket.on('teacher:co', function(foo){
+  // This is only called by the relay.js (not the Etu one), to store the socket ID into the object
+  socket.on('teacher:co', function(){
     teacher.id = socket.id;
-    console.log(teacher.id);
+    console.log("Teacher socket ID : "+teacher.id+"");
+  });
+
+    socket.on('teacher:co', function(){
+      teacher.id = socket.id;
+      console.log("New student socket open with ID : "+teacher.id+"");
   });
 
 
   socket.on('file:etuChange', function(){
-      // comment je chope le socket du prof ?
+    console.log("tentative envoie fichier");
+    MessageTeach("petit test");
+      // io.sockets.socket(teacher.id).emit("etu:send", "Etu send a file");
   });
 
   // console.log('nouvelle connexion', socket.id);

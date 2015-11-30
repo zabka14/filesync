@@ -28,6 +28,14 @@ sio.on('connect', function() {
   sio.emit('teacher:co');
 });
 
+
+
+sio.on("etu:send", function() {
+  console.log("Message d'un etudiant");
+});
+
+
+
 gaze(directory, function(err, watcher) {
   if (err) {
     throw err;
